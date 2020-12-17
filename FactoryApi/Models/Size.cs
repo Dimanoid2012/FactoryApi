@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace FactoryApi.Models
 {
@@ -33,16 +34,21 @@ namespace FactoryApi.Models
         /// <summary>
         /// Идентификатор размера
         /// </summary>
-        public Guid Id { get; set; }
+        public Guid Id { get; private set; }
 
         /// <summary>
         /// Наименование размера
         /// </summary>
-        public string Name { get; set; }
+        public string Name { get; private set; }
 
         /// <summary>
         /// Обозначение размера: XS, M, XL, и т.д.
         /// </summary>
-        public string Value { get; set; }
+        public string Value { get; private set; }
+        
+        /// <summary>
+        /// Список заказов данного размера
+        /// </summary>
+        public IReadOnlyCollection<Order> Orders { get; private set; }
     }
 }

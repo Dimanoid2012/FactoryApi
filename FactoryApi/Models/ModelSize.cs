@@ -1,4 +1,6 @@
-﻿namespace FactoryApi.Models
+﻿using System;
+
+namespace FactoryApi.Models
 {
     /// <summary>
     /// Доступный размер для модели
@@ -17,13 +19,22 @@
         }
 
         /// <summary>
+        /// Для EntityFramework Core
+        /// </summary>
+        private ModelSize()
+        {
+            Model = new Model(Guid.Empty);
+            Size = new Size(Guid.Empty);
+        }
+
+        /// <summary>
         /// Модель
         /// </summary>
-        public Model Model { get; set; }
+        public Model Model { get; private set; }
 
         /// <summary>
         /// Размер
         /// </summary>
-        public Size Size { get; set; }
+        public Size Size { get; private set; }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace FactoryApi.Models
 {
@@ -49,26 +50,31 @@ namespace FactoryApi.Models
         /// <summary>
         /// Идентификатор картинки
         /// </summary>
-        public Guid Id { get; set; }
+        public Guid Id { get; private set; }
 
         /// <summary>
         /// Наименование картинки
         /// </summary>
-        public string Name { get; set; }
+        public string Name { get; private set; }
 
         /// <summary>
         /// Ширина картинки
         /// </summary>
-        public decimal Width { get; set; }
+        public decimal Width { get; private set; }
 
         /// <summary>
         /// Высота картинки
         /// </summary>
-        public decimal Height { get; set; }
+        public decimal Height { get; private set; }
 
         /// <summary>
         /// Содержимое картинки
         /// </summary>
-        public byte[] Contents { get; set; }
+        public byte[] Contents { get; private set; }
+        
+        /// <summary>
+        /// Список заказов с данной картинкой
+        /// </summary>
+        public IReadOnlyCollection<Order> Orders { get; private set; }
     }
 }

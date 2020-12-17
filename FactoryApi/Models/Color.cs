@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace FactoryApi.Models
 {
@@ -31,31 +32,37 @@ namespace FactoryApi.Models
         {
             Id = id;
             Name = "";
+            Models = Array.Empty<Model>();
         }
 
         /// <summary>
         /// Идентификатор цвета
         /// </summary>
-        public Guid Id { get; set; }
+        public Guid Id { get; private set; }
 
         /// <summary>
         /// Наименование цвета
         /// </summary>
-        public string Name { get; set; }
+        public string Name { get; private set; }
 
         /// <summary>
         /// Красная составляющая
         /// </summary>
-        public byte R { get; set; }
+        public byte R { get; private set; }
 
         /// <summary>
         /// Зеленая составляющая
         /// </summary>
-        public byte G { get; set; }
+        public byte G { get; private set; }
 
         /// <summary>
         /// Синяя составляющая
         /// </summary>
-        public byte B { get; set; }
+        public byte B { get; private set; }
+
+        /// <summary>
+        /// Список моделей с данным цветом
+        /// </summary>
+        public IReadOnlyCollection<Model> Models { get; private set; }
     }
 }

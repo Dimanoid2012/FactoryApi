@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace FactoryApi.Models
 {
@@ -28,21 +29,27 @@ namespace FactoryApi.Models
             Id = id;
             Name = "";
             Color = new Color(Guid.Empty);
+            Orders = Array.Empty<Order>();
         }
 
         /// <summary>
         /// Идентификатор модели
         /// </summary>
-        public Guid Id { get; set; }
+        public Guid Id { get; private set; }
 
         /// <summary>
         /// Наименование модели
         /// </summary>
-        public string Name { get; set; }
+        public string Name { get; private set; }
 
         /// <summary>
         /// Цвет модели
         /// </summary>
-        public Color Color { get; set; }
+        public Color Color { get; private set; }
+        
+        /// <summary>
+        /// Список заказов данной модели
+        /// </summary>
+        public IReadOnlyCollection<Order> Orders { get; private set; }
     }
 }

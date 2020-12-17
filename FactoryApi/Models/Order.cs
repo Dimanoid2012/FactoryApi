@@ -59,7 +59,7 @@ namespace FactoryApi.Models
         /// <summary>
         /// Идентификатор заказа
         /// </summary>
-        public Guid Id { get; set; }
+        public Guid Id { get;private  set; }
         
         /// <summary>
         /// Статус заказа
@@ -69,47 +69,47 @@ namespace FactoryApi.Models
         /// <summary>
         /// Номер заказа (генерируется базой данных)
         /// </summary>
-        public int Number { get; }
+        public int Number { get; private set; }
 
         /// <summary>
         /// Модель
         /// </summary>
-        public Model Model { get; }
+        public Model Model { get; private set;}
 
         /// <summary>
         /// Размер
         /// </summary>
-        public Size Size { get; }
+        public Size Size { get;private set; }
 
         /// <summary>
         /// Расположение принта: спереди или сзади
         /// </summary>
-        public ImageSide Side { get; }
+        public ImageSide Side { get;private set; }
 
         /// <summary>
         /// Принт
         /// </summary>
-        public Image Image { get; }
+        public Image Image { get; private set;}
 
         /// <summary>
         /// Смещение принта сверху
         /// </summary>
-        public decimal Top { get; }
+        public decimal Top { get; private set;}
 
         /// <summary>
         /// Смещение принта слева
         /// </summary>
-        public decimal Left { get; }
+        public decimal Left { get; private set;}
 
         /// <summary>
         /// Имя клиента
         /// </summary>
-        public string ClientName { get; set; }
+        public string ClientName { get; private set; }
 
         /// <summary>
         /// Номер телефона клиента
         /// </summary>
-        public string ClientPhone { get; set; }
+        public string ClientPhone { get; private set; }
     }
 
     /// <summary>
