@@ -1,0 +1,27 @@
+version: '3.4'
+
+services:
+  factoryapi:
+    image: ${DOCKER_REGISTRY-}factoryapi
+    ports:
+      - "50000:80"
+    depends_on:
+      - "postgres_image"
+    build:
+      context: .
+      dockerfile: FactoryApi/Dockerfile
+    environment:
+      DB_CONNECTION_STRING: "host=postgres_image;port=5432;database=factorydb;username=factoryuser;password=factoryuser"
+
+  postgres_image:
+    image: postgres:latest
+    ports:
+      - "55432:5432"
+    restart: always
+    volumes:
+      - db_volume:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: "factoryuser"
+      POSTGRES_PASSWORD: "factoryuser"
+volumes:
+  db_volume:

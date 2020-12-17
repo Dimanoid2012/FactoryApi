@@ -341,3 +341,6 @@ healthchecksdb
 
 # Logs
 logs/
+
+.ionide
+.vscode
