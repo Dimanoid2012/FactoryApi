@@ -8,8 +8,6 @@ namespace FactoryApi.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            #region Identity
-            
             migrationBuilder.CreateTable(
                 name: "AspNetRoles",
                 columns: table => new
@@ -48,7 +46,50 @@ namespace FactoryApi.Migrations
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
                 });
-            
+
+            migrationBuilder.CreateTable(
+                name: "Colors",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    R = table.Column<byte>(type: "smallint", nullable: false),
+                    G = table.Column<byte>(type: "smallint", nullable: false),
+                    B = table.Column<byte>(type: "smallint", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Colors", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Images",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    Width = table.Column<decimal>(type: "numeric", nullable: false),
+                    Height = table.Column<decimal>(type: "numeric", nullable: false),
+                    Contents = table.Column<byte[]>(type: "bytea", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Images", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Sizes",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    Value = table.Column<string>(type: "text", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Sizes", x => x.Id);
+                });
+
             migrationBuilder.CreateTable(
                 name: "AspNetRoleClaims",
                 columns: table => new
@@ -154,51 +195,6 @@ namespace FactoryApi.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
-            
-            #endregion
-
-            migrationBuilder.CreateTable(
-                name: "Colors",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Name = table.Column<string>(type: "text", nullable: false),
-                    R = table.Column<byte>(type: "smallint", nullable: false),
-                    G = table.Column<byte>(type: "smallint", nullable: false),
-                    B = table.Column<byte>(type: "smallint", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Colors", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Images",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Name = table.Column<string>(type: "text", nullable: false),
-                    Width = table.Column<decimal>(type: "numeric", nullable: false),
-                    Height = table.Column<decimal>(type: "numeric", nullable: false),
-                    Contents = table.Column<byte[]>(type: "bytea", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Images", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Sizes",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Name = table.Column<string>(type: "text", nullable: false),
-                    Value = table.Column<string>(type: "text", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Sizes", x => x.Id);
-                });
 
             migrationBuilder.CreateTable(
                 name: "Models",
@@ -280,6 +276,19 @@ namespace FactoryApi.Migrations
                         principalTable: "Sizes",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.InsertData(
+                table: "AspNetRoles",
+                columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
+                values: new object[,]
+                {
+                    { "2950d35d-625c-4b57-99f4-f4b1fb0f87ee", "a5b21217-7f44-4b4b-8aaf-a50ab7244724", "Administrator", "ADMINISTRATOR" },
+                    { "97caa345-e581-46c2-bf08-413e7e86e6a5", "9e618b4b-c5ed-4104-8cac-a7721a796673", "Reception", "RECEPTION" },
+                    { "7af2ebb4-a639-47af-a481-cafa44fb5f8f", "e4ca84ec-ad49-42d7-9280-0e2a0f4c051a", "Writer", "WRITER" },
+                    { "10f9c73c-3e20-4a72-ab73-189482c2c465", "70e21b37-e6e4-40d2-a731-befdd06f0f25", "Printer", "PRINTER" },
+                    { "89e980da-2330-4425-bc98-2e3d6408af6c", "bb617a74-226b-48b7-8ddc-fb89fcc4b242", "Issuer", "ISSUER" },
+                    { "8bee707b-20cc-432f-b418-513a15fd03db", "dda57eff-3a87-440f-a45a-328c6a5717b5", "Board", "BOARD" }
                 });
 
             migrationBuilder.CreateIndex(
