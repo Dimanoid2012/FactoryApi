@@ -1,6 +1,4 @@
 using System;
-using FactoryApi.Models;
-using FactoryApi.Repositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -27,7 +25,7 @@ namespace FactoryApi
             services.AddDbContext<ApplicationContext>(options => options.UseNpgsql(connectionString));
             services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<ApplicationContext>();
             
-            services.AddTransient(x => new UserRepository(connectionString));
+            services.AddSingleton(_ => new ConnectionString(connectionString));
             
             services.AddControllers();
         }

@@ -23,6 +23,7 @@ namespace FactoryApi
             base.OnModelCreating(builder);
 
             builder.Entity<ModelSize>().HasKey("ModelId", "SizeId");
+            builder.Entity<Order>().Property(x => x.Number).ValueGeneratedOnAdd();
 
             builder.Entity<IdentityRole>().HasData(
                 new IdentityRole(FactoryApi.Roles.Administrator)

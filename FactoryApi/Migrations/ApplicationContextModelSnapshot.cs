@@ -127,7 +127,9 @@ namespace FactoryApi.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<int>("Number")
-                        .HasColumnType("integer");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .UseIdentityByDefaultColumn();
 
                     b.Property<int>("Side")
                         .HasColumnType("integer");
@@ -199,43 +201,43 @@ namespace FactoryApi.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "2950d35d-625c-4b57-99f4-f4b1fb0f87ee",
-                            ConcurrencyStamp = "a5b21217-7f44-4b4b-8aaf-a50ab7244724",
+                            Id = "47830b17-3fcb-4e58-b7ad-92effe09b12c",
+                            ConcurrencyStamp = "aa4c415e-1068-4f1f-bbdd-cac5ee641c75",
                             Name = "Administrator",
                             NormalizedName = "ADMINISTRATOR"
                         },
                         new
                         {
-                            Id = "97caa345-e581-46c2-bf08-413e7e86e6a5",
-                            ConcurrencyStamp = "9e618b4b-c5ed-4104-8cac-a7721a796673",
+                            Id = "03493a57-6d69-4d33-8e2b-2994bab2a9ad",
+                            ConcurrencyStamp = "ae4290d8-0aa6-4c33-bed9-96745db4c62e",
                             Name = "Reception",
                             NormalizedName = "RECEPTION"
                         },
                         new
                         {
-                            Id = "7af2ebb4-a639-47af-a481-cafa44fb5f8f",
-                            ConcurrencyStamp = "e4ca84ec-ad49-42d7-9280-0e2a0f4c051a",
+                            Id = "5c7abf26-76fe-41d5-ba97-ce0e140c38cc",
+                            ConcurrencyStamp = "0fa8e934-59fd-407c-9b5f-7544aab51d0b",
                             Name = "Writer",
                             NormalizedName = "WRITER"
                         },
                         new
                         {
-                            Id = "10f9c73c-3e20-4a72-ab73-189482c2c465",
-                            ConcurrencyStamp = "70e21b37-e6e4-40d2-a731-befdd06f0f25",
+                            Id = "6ef504c7-6d38-472e-9d41-121d9ed873a4",
+                            ConcurrencyStamp = "7a7379b9-a499-4235-9f87-3034265d080e",
                             Name = "Printer",
                             NormalizedName = "PRINTER"
                         },
                         new
                         {
-                            Id = "89e980da-2330-4425-bc98-2e3d6408af6c",
-                            ConcurrencyStamp = "bb617a74-226b-48b7-8ddc-fb89fcc4b242",
+                            Id = "a9c1e0b9-d662-4cea-851a-bfa5bfa4b703",
+                            ConcurrencyStamp = "4db4f00f-c19b-4677-8c1c-d9019e8fa78c",
                             Name = "Issuer",
                             NormalizedName = "ISSUER"
                         },
                         new
                         {
-                            Id = "8bee707b-20cc-432f-b418-513a15fd03db",
-                            ConcurrencyStamp = "dda57eff-3a87-440f-a45a-328c6a5717b5",
+                            Id = "63b99760-4c0e-4711-8d90-0a28d31e07df",
+                            ConcurrencyStamp = "b0f7f10d-95f9-4f35-a80a-5d7f77b083e5",
                             Name = "Board",
                             NormalizedName = "BOARD"
                         });

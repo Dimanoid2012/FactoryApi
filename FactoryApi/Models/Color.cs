@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 
 namespace FactoryApi.Models
 {
@@ -8,6 +9,23 @@ namespace FactoryApi.Models
     /// </summary>
     public class Color
     {
+        public static Color Parse(string name, string value)
+        {
+            if (value.Length != 7)
+                throw new ArgumentOutOfRangeException(nameof(value), value,
+                    "Неправильный формат цвета. Формат должен быть #FFFFFF");
+
+            var rString = value[1..3];
+            var gString = value[3..5];
+            var bString = value[5..];
+            
+            var r = byte.Parse(rString, NumberStyles.HexNumber);
+            var g = byte.Parse(gString, NumberStyles.HexNumber);
+            var b = byte.Parse(bString, NumberStyles.HexNumber);
+
+            return new Color(name, r, g, b);
+        }
+        
         /// <summary>
         /// Создает новый цвет
         /// </summary>
@@ -16,7 +34,7 @@ namespace FactoryApi.Models
         /// <param name="r">Красная составляющая</param>
         /// <param name="g">Зеленая составляющая</param>
         /// <param name="b">Синяя составляющая</param>
-        public Color(string name, byte r, byte g, byte b, Guid? id = null) : this(id ?? Guid.NewGuid())
+        public Color(string name, byte r, byte g, byte b) : this(Guid.NewGuid())
         {
             Name = name;
             R = r;
@@ -64,5 +82,11 @@ namespace FactoryApi.Models
         /// Список моделей с данным цветом
         /// </summary>
         public IReadOnlyCollection<Model> Models { get; private set; }
+
+        /// <summary>
+        /// Возвращает HTML-представление цвета, например, #FFFFFF.
+        /// </summary>
+        /// <returns>Возвращает HTML-представление цвета, например, #FFFFFF.</returns>
+        public override string ToString() => $"#{R:X}{G:X}{B:X}";
     }
 }
