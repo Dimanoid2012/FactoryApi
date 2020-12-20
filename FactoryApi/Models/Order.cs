@@ -19,17 +19,21 @@ namespace FactoryApi.Models
         /// <param name="clientName">Имя клиента</param>
         /// <param name="clientPhone">Номер телефона клиента</param>
         /// <param name="id">Идентификатор заказа</param>
+        /// <exception cref="ArgumentOutOfRangeException">Неправильно задано расположение принта или его смещение</exception>
         public Order(Model model, Size size, ImageSide side, Image image, decimal top, decimal left, string clientName,
             string clientPhone, Guid? id = null) :
             this(id ?? Guid.NewGuid())
         {
+            if (!Enum.IsDefined(typeof(ImageSide), side))
+                throw new ArgumentOutOfRangeException(nameof(side), side,
+                    "Расположение принта указано неправильно");
             if (top < 0)
                 throw new ArgumentOutOfRangeException(nameof(top), top,
                     "Смещение картинки не может быть отрицательным");
             if (left < 0)
                 throw new ArgumentOutOfRangeException(nameof(left), left,
                     "Смещение картинки не может быть отрицательным");
-            
+
             State = OrderState.New;
             Model = model;
             Size = size;
@@ -59,8 +63,8 @@ namespace FactoryApi.Models
         /// <summary>
         /// Идентификатор заказа
         /// </summary>
-        public Guid Id { get;private  set; }
-        
+        public Guid Id { get; private set; }
+
         /// <summary>
         /// Статус заказа
         /// </summary>
@@ -74,32 +78,32 @@ namespace FactoryApi.Models
         /// <summary>
         /// Модель
         /// </summary>
-        public Model Model { get; private set;}
+        public Model Model { get; private set; }
 
         /// <summary>
         /// Размер
         /// </summary>
-        public Size Size { get;private set; }
+        public Size Size { get; private set; }
 
         /// <summary>
         /// Расположение принта: спереди или сзади
         /// </summary>
-        public ImageSide Side { get;private set; }
+        public ImageSide Side { get; private set; }
 
         /// <summary>
         /// Принт
         /// </summary>
-        public Image Image { get; private set;}
+        public Image Image { get; private set; }
 
         /// <summary>
         /// Смещение принта сверху
         /// </summary>
-        public decimal Top { get; private set;}
+        public decimal Top { get; private set; }
 
         /// <summary>
         /// Смещение принта слева
         /// </summary>
-        public decimal Left { get; private set;}
+        public decimal Left { get; private set; }
 
         /// <summary>
         /// Имя клиента

@@ -4,45 +4,30 @@ using FactoryApi.Models;
 namespace FactoryApi.DTO
 {
     /// <summary>
-    /// Заказ
+    /// Новый заказ
     /// </summary>
-    public class OrderDto
+    public class NewOrderDto
     {
-        /// <summary>
-        /// Идентификатор заказа
-        /// </summary>
-        public Guid Id { get; set; }
-
-        /// <summary>
-        /// Статус заказа
-        /// </summary>
-        public OrderState State { get; set; }
-
-        /// <summary>
-        /// Номер заказа (генерируется базой данных)
-        /// </summary>
-        public int Number { get; set; }
-
         /// <summary>
         /// Идентификатор модели
         /// </summary>
         public Guid ModelId { get; set; }
-
+        
         /// <summary>
         /// Идентификатор размера
         /// </summary>
         public Guid SizeId { get; set; }
-
+        
         /// <summary>
         /// Расположение принта
         /// </summary>
         public ImageSide Side { get; set; }
-
+        
         /// <summary>
         /// Принт
         /// </summary>
         public Guid ImageId { get; set; }
-
+        
         /// <summary>
         /// Смещение принта сверху
         /// </summary>
