@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
-using System.Security.Cryptography;
 using System.Threading.Tasks;
 using Dapper;
 using FactoryApi.DTO;
@@ -17,7 +15,7 @@ namespace FactoryApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    [Authorize(Roles = Roles.Administrator)]
     public class ColorsController : ControllerBase
     {
         private readonly ApplicationContext _context;
