@@ -47,6 +47,7 @@ namespace FactoryApi.Controllers
                 return BadRequest("Не указано обозначение размера");
 
             var size = new Size(dto.Name, dto.Value);
+            
             _context.Sizes.Add(size);
             await _context.SaveChangesAsync();
 

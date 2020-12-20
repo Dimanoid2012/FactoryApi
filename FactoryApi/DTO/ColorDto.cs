@@ -7,6 +7,9 @@ namespace FactoryApi.DTO
     /// </summary>
     public class ColorDto
     {
+        /// <summary>
+        /// Идентификатор цвета
+        /// </summary>
         public Guid? Id { get; set; }
         
         /// <summary>

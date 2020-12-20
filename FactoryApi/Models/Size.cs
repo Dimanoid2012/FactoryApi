@@ -29,6 +29,7 @@ namespace FactoryApi.Models
             Id = id;
             Name = "";
             Value = "";
+            Orders = new List<Order>();
         }
 
         /// <summary>

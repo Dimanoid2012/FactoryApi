@@ -29,7 +29,7 @@ namespace FactoryApi.Models
             Id = id;
             Name = "";
             Color = new Color(Guid.Empty);
-            Orders = Array.Empty<Order>();
+            Orders = new List<Order>();
         }
 
         /// <summary>

@@ -27,7 +27,7 @@ namespace FactoryApi.Models
         {
             Id = id;
             Name = "";
-            Models = Array.Empty<Model>();
+            Models = new List<Model>();
         }
 
         /// <summary>

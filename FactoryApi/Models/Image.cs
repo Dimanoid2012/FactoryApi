@@ -61,7 +61,7 @@ namespace FactoryApi.Models
             Name = "";
             Type = "";
             Contents = Array.Empty<byte>();
-            Orders = Array.Empty<Order>();
+            Orders = new List<Order>();
         }
 
 
