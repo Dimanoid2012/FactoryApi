@@ -1,10 +1,14 @@
-﻿namespace FactoryApi.DTO
+﻿using System;
+
+namespace FactoryApi.DTO
 {
     /// <summary>
     /// Цвет
     /// </summary>
     public class ColorDto
     {
+        public Guid? Id { get; set; }
+        
         /// <summary>
         /// Наименование цвета
         /// </summary>

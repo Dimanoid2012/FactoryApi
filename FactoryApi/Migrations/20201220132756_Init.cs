@@ -53,9 +53,9 @@ namespace FactoryApi.Migrations
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Name = table.Column<string>(type: "text", nullable: false),
-                    R = table.Column<byte>(type: "smallint", nullable: false),
-                    G = table.Column<byte>(type: "smallint", nullable: false),
-                    B = table.Column<byte>(type: "smallint", nullable: false)
+                    RGB_R = table.Column<byte>(type: "smallint", nullable: false),
+                    RGB_G = table.Column<byte>(type: "smallint", nullable: false),
+                    RGB_B = table.Column<byte>(type: "smallint", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -246,7 +246,7 @@ namespace FactoryApi.Migrations
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     State = table.Column<int>(type: "integer", nullable: false),
                     Number = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     ModelId = table.Column<Guid>(type: "uuid", nullable: false),
                     SizeId = table.Column<Guid>(type: "uuid", nullable: false),
                     Side = table.Column<int>(type: "integer", nullable: false),
@@ -284,12 +284,12 @@ namespace FactoryApi.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "47830b17-3fcb-4e58-b7ad-92effe09b12c", "aa4c415e-1068-4f1f-bbdd-cac5ee641c75", "Administrator", "ADMINISTRATOR" },
-                    { "03493a57-6d69-4d33-8e2b-2994bab2a9ad", "ae4290d8-0aa6-4c33-bed9-96745db4c62e", "Reception", "RECEPTION" },
-                    { "5c7abf26-76fe-41d5-ba97-ce0e140c38cc", "0fa8e934-59fd-407c-9b5f-7544aab51d0b", "Writer", "WRITER" },
-                    { "6ef504c7-6d38-472e-9d41-121d9ed873a4", "7a7379b9-a499-4235-9f87-3034265d080e", "Printer", "PRINTER" },
-                    { "a9c1e0b9-d662-4cea-851a-bfa5bfa4b703", "4db4f00f-c19b-4677-8c1c-d9019e8fa78c", "Issuer", "ISSUER" },
-                    { "63b99760-4c0e-4711-8d90-0a28d31e07df", "b0f7f10d-95f9-4f35-a80a-5d7f77b083e5", "Board", "BOARD" }
+                    { "88b5386c-1904-4326-97f7-14a497549c49", "e6d44412-ecf0-4840-9f42-a77690e04de3", "Administrator", "ADMINISTRATOR" },
+                    { "f8c8bc95-23f8-45ba-8b2d-88352bfd3289", "df5b17ff-0f2b-4f79-a323-79095b718110", "Reception", "RECEPTION" },
+                    { "41e5abbc-202c-4b65-bc48-a8ae8a14722f", "975dcc26-15ee-4e31-b2b2-1426180fe5f3", "Writer", "WRITER" },
+                    { "c5872579-9861-4889-a89e-dbce38c0134d", "82ba9fc8-4423-4cb5-adf9-5667928ea42f", "Printer", "PRINTER" },
+                    { "b5a01fe8-225a-4bc8-aa91-cb17305b80f9", "2ca0f484-26a9-4450-887b-40c1947703bd", "Issuer", "ISSUER" },
+                    { "84f1aac4-d856-4839-853b-e62c49867d7e", "44d16119-3fee-4cfc-843e-7c3cf85f647e", "Board", "BOARD" }
                 });
 
             migrationBuilder.CreateIndex(

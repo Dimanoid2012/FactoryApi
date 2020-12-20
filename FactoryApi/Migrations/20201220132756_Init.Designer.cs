@@ -10,7 +10,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace FactoryApi.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20201218150620_Init")]
+    [Migration("20201220132756_Init")]
     partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -27,18 +27,9 @@ namespace FactoryApi.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<byte>("B")
-                        .HasColumnType("smallint");
-
-                    b.Property<byte>("G")
-                        .HasColumnType("smallint");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
-
-                    b.Property<byte>("R")
-                        .HasColumnType("smallint");
 
                     b.HasKey("Id");
 
@@ -203,43 +194,43 @@ namespace FactoryApi.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "47830b17-3fcb-4e58-b7ad-92effe09b12c",
-                            ConcurrencyStamp = "aa4c415e-1068-4f1f-bbdd-cac5ee641c75",
+                            Id = "88b5386c-1904-4326-97f7-14a497549c49",
+                            ConcurrencyStamp = "e6d44412-ecf0-4840-9f42-a77690e04de3",
                             Name = "Administrator",
                             NormalizedName = "ADMINISTRATOR"
                         },
                         new
                         {
-                            Id = "03493a57-6d69-4d33-8e2b-2994bab2a9ad",
-                            ConcurrencyStamp = "ae4290d8-0aa6-4c33-bed9-96745db4c62e",
+                            Id = "f8c8bc95-23f8-45ba-8b2d-88352bfd3289",
+                            ConcurrencyStamp = "df5b17ff-0f2b-4f79-a323-79095b718110",
                             Name = "Reception",
                             NormalizedName = "RECEPTION"
                         },
                         new
                         {
-                            Id = "5c7abf26-76fe-41d5-ba97-ce0e140c38cc",
-                            ConcurrencyStamp = "0fa8e934-59fd-407c-9b5f-7544aab51d0b",
+                            Id = "41e5abbc-202c-4b65-bc48-a8ae8a14722f",
+                            ConcurrencyStamp = "975dcc26-15ee-4e31-b2b2-1426180fe5f3",
                             Name = "Writer",
                             NormalizedName = "WRITER"
                         },
                         new
                         {
-                            Id = "6ef504c7-6d38-472e-9d41-121d9ed873a4",
-                            ConcurrencyStamp = "7a7379b9-a499-4235-9f87-3034265d080e",
+                            Id = "c5872579-9861-4889-a89e-dbce38c0134d",
+                            ConcurrencyStamp = "82ba9fc8-4423-4cb5-adf9-5667928ea42f",
                             Name = "Printer",
                             NormalizedName = "PRINTER"
                         },
                         new
                         {
-                            Id = "a9c1e0b9-d662-4cea-851a-bfa5bfa4b703",
-                            ConcurrencyStamp = "4db4f00f-c19b-4677-8c1c-d9019e8fa78c",
+                            Id = "b5a01fe8-225a-4bc8-aa91-cb17305b80f9",
+                            ConcurrencyStamp = "2ca0f484-26a9-4450-887b-40c1947703bd",
                             Name = "Issuer",
                             NormalizedName = "ISSUER"
                         },
                         new
                         {
-                            Id = "63b99760-4c0e-4711-8d90-0a28d31e07df",
-                            ConcurrencyStamp = "b0f7f10d-95f9-4f35-a80a-5d7f77b083e5",
+                            Id = "84f1aac4-d856-4839-853b-e62c49867d7e",
+                            ConcurrencyStamp = "44d16119-3fee-4cfc-843e-7c3cf85f647e",
                             Name = "Board",
                             NormalizedName = "BOARD"
                         });
@@ -411,6 +402,34 @@ namespace FactoryApi.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens");
+                });
+
+            modelBuilder.Entity("FactoryApi.Models.Color", b =>
+                {
+                    b.OwnsOne("FactoryApi.Models.RGB", "RGB", b1 =>
+                        {
+                            b1.Property<Guid>("ColorId")
+                                .HasColumnType("uuid");
+
+                            b1.Property<byte>("B")
+                                .HasColumnType("smallint");
+
+                            b1.Property<byte>("G")
+                                .HasColumnType("smallint");
+
+                            b1.Property<byte>("R")
+                                .HasColumnType("smallint");
+
+                            b1.HasKey("ColorId");
+
+                            b1.ToTable("Colors");
+
+                            b1.WithOwner()
+                                .HasForeignKey("ColorId");
+                        });
+
+                    b.Navigation("RGB")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("FactoryApi.Models.Model", b =>
