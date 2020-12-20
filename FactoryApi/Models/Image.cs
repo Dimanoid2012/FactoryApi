@@ -11,14 +11,29 @@ namespace FactoryApi.Models
         /// <param name="name">Наименование картинки</param>
         /// <param name="width">Ширина картинки</param>
         /// <param name="height">Высота картинки</param>
+        /// <param name="type">Тип картинки</param>
         /// <param name="contents">Содержимое картинки</param>
         /// <param name="id">Идентификатор картинки</param>
-        public Image(string name, decimal width, decimal height, byte[] contents, Guid? id = null) : this(
+        public Image(string name, decimal width, decimal height, string type, byte[] contents, Guid? id = null) : this(
             id ?? Guid.NewGuid())
         {
-            Name = name;
+            if (width <= 0)
+                throw new ArgumentOutOfRangeException(nameof(width), width,
+                    "Ширина картинки должна быть положительной");
+            if (height <= 0)
+                throw new ArgumentOutOfRangeException(nameof(height), height,
+                    "Ширина картинки должна быть положительной");
+            if (string.IsNullOrWhiteSpace(type))
+                throw new ArgumentOutOfRangeException(nameof(type), type, 
+                    "Тип картинки должен быть указан");
+            if (contents.Length == 0)
+                throw new ArgumentOutOfRangeException(nameof(contents), 
+                    "Содержимое картинки должно быть указано");
+
+            Name = string.IsNullOrWhiteSpace(name) ? Id.ToString() : name;
             Width = width;
             Height = height;
+            Type = type;
             Contents = contents;
         }
 
@@ -27,14 +42,15 @@ namespace FactoryApi.Models
         /// </summary>
         /// <param name="width">Ширина картинки</param>
         /// <param name="height">Высота картинки</param>
+        /// <param name="type">Тип картинки</param>
         /// <param name="contents">Содержимое картинки</param>
         /// <param name="id">Идентификатор картинки</param>
-        public Image(decimal width, decimal height, byte[] contents, Guid? id = null) : this("", width, height,
-            contents, id)
+        public Image(decimal width, decimal height, string type, byte[] contents, Guid? id = null) : this("", width,
+            height, type, contents, id)
         {
             Name = Id.ToString();
         }
-        
+
         /// <summary>
         /// Используется для создания ссылки на существующую в базе картинку
         /// </summary>
@@ -43,7 +59,9 @@ namespace FactoryApi.Models
         {
             Id = id;
             Name = "";
+            Type = "";
             Contents = Array.Empty<byte>();
+            Orders = Array.Empty<Order>();
         }
 
 
@@ -66,6 +84,11 @@ namespace FactoryApi.Models
         /// Высота картинки
         /// </summary>
         public decimal Height { get; private set; }
+        
+        /// <summary>
+        /// Тип картинки: jpg/png/gif и т.д.
+        /// </summary>
+        public string Type { get; private set; }
 
         /// <summary>
         /// Содержимое картинки
