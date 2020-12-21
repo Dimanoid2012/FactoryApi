@@ -40,6 +40,6 @@ namespace FactoryApi
         /// <summary>
         /// Включить этап НАНЕСЕНИЕ
         /// </summary>
-        public bool EnableWriting { get; }
+        public bool EnableWriting { get; set; }
     }
 }

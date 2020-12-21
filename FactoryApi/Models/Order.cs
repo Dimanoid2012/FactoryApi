@@ -213,6 +213,21 @@ namespace FactoryApi.Models
             State = OrderState.Done;
             return true;
         }
+
+        /// <summary>
+        /// Возвращает строковое представление статуса заказа
+        /// </summary>
+        /// <returns>Возвращает строковое представление статуса заказа</returns>
+        public string StateText() => State switch
+        {
+            OrderState.Confirming => "ПОДТВЕРЖДЕНИЕ",
+            OrderState.Writing => "НА НАНЕСЕНИИ",
+            OrderState.Printing => "НА ПЕЧАТИ",
+            OrderState.Issue => "ВЫДАЧА",
+            OrderState.Done => "ЗАВЕРШЕНО",
+            OrderState.Canceled => "ОТМЕНЕН",
+            _ => throw new ArgumentOutOfRangeException(nameof(State), State, "Неожиданное значение статуса")
+        };
     }
 
     /// <summary>

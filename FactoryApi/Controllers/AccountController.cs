@@ -102,7 +102,7 @@ namespace FactoryApi.Controllers
             if (!result.Succeeded)
             {
                 _logger.LogWarning(
-                    $"Неудачная попытка смены пароля пользователя {User.Identity?.Name}: {result.Errors}");
+                    $"Неудачная попытка смены пароля пользователя {User.Identity?.Name}: {ErrorsListToString(result.Errors)}");
                 return BadRequest("Не удалось сменить пароль");
             }
 
@@ -117,6 +117,22 @@ namespace FactoryApi.Controllers
             var username = User.Identity?.Name;
             await _signInManager.SignOutAsync();
             _logger.LogInformation($"Пользователь {username} вышел из системы");
+            return NoContent();
+        }
+        
+        [HttpDelete("{username}")]
+        [Authorize(Roles = Roles.Administrator)]
+        public async Task<IActionResult> DeleteUser(string username)
+        {
+            var result = await _userManager.DeleteAsync(new IdentityUser(username));
+            if (!result.Succeeded)
+            {
+                _logger.LogWarning(
+                    $"Неудачная попытка удаления пользователя {username} пользователем {User.Identity?.Name}: {ErrorsListToString(result.Errors)}");
+                return BadRequest("Не удалось удалить пользователя");
+            }
+
+            _logger.LogInformation($"Пользователь {username} удален из системы");
             return NoContent();
         }
 

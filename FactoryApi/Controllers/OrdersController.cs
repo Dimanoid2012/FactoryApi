@@ -1,16 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-using Dapper;
 using FactoryApi.DTO;
 using FactoryApi.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using Npgsql;
 
 namespace FactoryApi.Controllers
 {
@@ -73,7 +70,7 @@ namespace FactoryApi.Controllers
                 x.ClientPhone
             }).ToListAsync());
         }
-        
+
         [HttpGet("forBoard")]
         [Authorize(Roles = Roles.Board)]
         public async Task<IActionResult> GetOrdersForBoard()
@@ -327,6 +324,64 @@ namespace FactoryApi.Controllers
                 $"Заказ {id} переведен в статус ЗАВЕРШЕНО пользователем {User.Identity?.Name}");
 
             return Ok("Заказ переведен в статус ЗАВЕРШЕНО");
+        }
+
+        [HttpPost("{id}/changeState")]
+        [Authorize(Roles = Roles.Administrator)]
+        public async Task<IActionResult> ChangeOrderState(Guid id, OrderState state)
+        {
+            var order = await _context.Orders.AsNoTracking()
+                .FirstOrDefaultAsync(x => x.Id == id);
+            if (order == null)
+                return NotFound($"Не найден заказ с id {id}");
+
+            _context.Entry(order).State = EntityState.Modified;
+
+            order.State = state;
+
+            await _context.SaveChangesAsync();
+
+            _logger.LogInformation(
+                $"Заказ {id} переведен в статус {order.StateText()} пользователем {User.Identity?.Name}");
+
+            return Ok("Заказ переведен в статус " + order.StateText());
+        }
+
+        [HttpDelete("{id}")]
+        [Authorize(Roles = Roles.Administrator)]
+        public async Task<IActionResult> DeleteOrder(Guid id)
+        {
+            _context.Entry(new Order(id)).State = EntityState.Deleted;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                return NotFound($"Не найден заказ с id {id}");
+            }
+
+            _logger.LogInformation(
+                $"Заказ {id} удален пользователем {User.Identity?.Name}");
+
+            return NoContent();
+        }
+        
+        [HttpDelete("deleteAll")]
+        [Authorize(Roles = Roles.Administrator)]
+        public async Task<IActionResult> DeleteAllOrders()
+        {
+            var orders = await _context.Orders.ToListAsync();
+
+            _context.Orders.RemoveRange(orders);
+
+            await _context.SaveChangesAsync(); 
+            
+            _logger.LogInformation(
+                $"Все заказы удалены пользователем {User.Identity?.Name}");
+
+            return NoContent();
         }
     }
 }
