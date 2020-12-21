@@ -1,4 +1,5 @@
 ﻿using System;
+using Microsoft.AspNetCore.Identity;
 
 namespace FactoryApi.Models
 {
@@ -114,6 +115,16 @@ namespace FactoryApi.Models
         /// Номер телефона клиента
         /// </summary>
         public string ClientPhone { get; private set; }
+        
+        /// <summary>
+        /// Исполнитель стадии НА НАНЕСЕНИИ
+        /// </summary>
+        public string? WriterName { get; private set; }
+        
+        /// <summary>
+        /// Исполнитель стадии НА ПЕЧАТИ
+        /// </summary>
+        public string? PrinterName { get; private set; }
 
         /// <summary>
         /// Отменяет новый заказ
@@ -139,6 +150,54 @@ namespace FactoryApi.Models
                 return false;
 
             State = Configuration.GetInstance().EnableWriting ? OrderState.Writing : OrderState.Printing;
+            return true;
+        }
+
+        /// <summary>
+        /// Задает исполнителя на стадии НА НАНЕСЕНИИ
+        /// </summary>
+        /// <param name="writerName">Исполнитель стадии НА НАНЕСЕНИИ</param>
+        /// <returns>Возвращает true, если заказ в статусе НА НАНЕСЕНИИ и исполнитель не задан, иначе возвращает false</returns>
+        public bool SetWriter(string writerName)
+        {
+            if (State != OrderState.Writing || WriterName != null)
+                return false;
+
+            if (string.IsNullOrWhiteSpace(writerName))
+                return false;
+            
+            WriterName = writerName;
+            return true;
+        }
+        
+        /// <summary>
+        /// Задает исполнителя на стадии НА ПЕЧАТИ
+        /// </summary>
+        /// <param name="printerName">Исполнитель стадии НА ПЕЧАТИ</param>
+        /// <returns>Возвращает true, если заказ в статусе НА ПЕЧАТИ и исполнитель не задан, иначе возвращает false</returns>
+        public bool SetPrinter(string printerName)
+        {
+            if (State != OrderState.Printing || PrinterName != null)
+                return false;
+            
+            if (string.IsNullOrWhiteSpace(printerName))
+                return false;
+
+            PrinterName = printerName;
+            return true;
+        }
+        
+        /// <summary>
+        /// Переводит заказ в статус ВЫДАЧА
+        /// </summary>
+        /// <returns>Возвращает true, если заказ был в статусе НА НАНЕСЕНИИ или НА ПЕЧАТИ и был указан исполнитель, иначе возвращает false</returns>
+        public bool Issue()
+        {
+            if ((State != OrderState.Writing || WriterName == null) &&
+                (State != OrderState.Printing || PrinterName == null)) 
+                return false;
+            
+            State = OrderState.Issue;
             return true;
         }
     }
