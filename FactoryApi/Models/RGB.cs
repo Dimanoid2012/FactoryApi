@@ -29,5 +29,11 @@ namespace FactoryApi.Models
 
             return new RGB(r, g, b);
         }
+        
+        /// <summary>
+        /// Возвращает HTML-представление цвета, например, #FFFFFF.
+        /// </summary>
+        /// <returns>Возвращает HTML-представление цвета, например, #FFFFFF.</returns>
+        public override string ToString() => $"#{R:X2}{G:X2}{B:X2}";
     }
 }

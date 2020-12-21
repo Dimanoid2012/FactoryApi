@@ -34,7 +34,7 @@ namespace FactoryApi.Models
                 throw new ArgumentOutOfRangeException(nameof(left), left,
                     "Смещение картинки не может быть отрицательным");
 
-            State = OrderState.New;
+            State = OrderState.Confirming;
             Model = model;
             Size = size;
             Side = side;
@@ -52,7 +52,7 @@ namespace FactoryApi.Models
         public Order(Guid id)
         {
             Id = id;
-            State = OrderState.New;
+            State = OrderState.Confirming;
             Model = new Model(Guid.Empty);
             Size = new Size(Guid.Empty);
             Image = new Image(Guid.Empty);
@@ -114,6 +114,33 @@ namespace FactoryApi.Models
         /// Номер телефона клиента
         /// </summary>
         public string ClientPhone { get; private set; }
+
+        /// <summary>
+        /// Отменяет новый заказ
+        /// </summary>
+        /// <returns>Возвращает true, если заказ был в статусе ПОДТВЕРЖДЕНИЕ, иначе возвращает false</returns>
+        public bool Cancel()
+        {
+            if (State != OrderState.Confirming)
+                return false;
+
+            State = OrderState.Canceled;
+            return true;
+
+        }
+
+        /// <summary>
+        /// Подтверждает новый заказ, переводя его в статус НАНЕСЕНИЕ или ПЕЧАТЬ в зависимости от настроек сессии
+        /// </summary>
+        /// <returns>Возвращает true, если заказ был в статусе ПОДТВЕРЖДЕНИЕ, иначе возвращает false</returns>
+        public bool Confirm()
+        {
+            if (State != OrderState.Confirming)
+                return false;
+
+            State = Configuration.GetInstance().EnableWriting ? OrderState.Writing : OrderState.Printing;
+            return true;
+        }
     }
 
     /// <summary>
@@ -122,34 +149,34 @@ namespace FactoryApi.Models
     public enum OrderState
     {
         /// <summary>
-        /// Новый
+        /// Подтверждение
         /// </summary>
-        New = 0,
-
-        /// <summary>
-        /// Подтвержден
-        /// </summary>
-        Confirmed = 1,
+        Confirming = 0,
 
         /// <summary>
         /// На нанесении
         /// </summary>
-        Writing = 2,
+        Writing = 1,
 
         /// <summary>
         /// На печати
         /// </summary>
-        Printing = 3,
+        Printing = 2,
 
         /// <summary>
         /// Выдача
         /// </summary>
-        Issue = 4,
+        Issue = 3,
 
         /// <summary>
         /// Завершено
         /// </summary>
-        Done = 100
+        Done = 100,
+        
+        /// <summary>
+        /// Отменен
+        /// </summary>
+        Canceled = 200
     }
 
     /// <summary>

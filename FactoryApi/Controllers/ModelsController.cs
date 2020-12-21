@@ -22,10 +22,10 @@ namespace FactoryApi.Controllers
         private readonly string _connectionString;
         private readonly ILogger<ModelsController>  _logger;
         
-        public ModelsController(ApplicationContext context, ConnectionString connectionString, ILogger<ModelsController> logger)
+        public ModelsController(ApplicationContext context, Configuration configuration, ILogger<ModelsController> logger)
         {
             _context = context;
-            _connectionString = connectionString.Value;
+            _connectionString = configuration.ConnectionString;
             _logger = logger;
         }
         

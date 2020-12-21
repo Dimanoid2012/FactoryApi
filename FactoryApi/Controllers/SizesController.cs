@@ -21,11 +21,11 @@ namespace FactoryApi.Controllers
         private readonly string _connectionString;
         private readonly ILogger<SizesController> _logger;
 
-        public SizesController(ApplicationContext context, ConnectionString connectionString,
+        public SizesController(ApplicationContext context, Configuration configuration,
             ILogger<SizesController> logger)
         {
             _context = context;
-            _connectionString = connectionString.Value;
+            _connectionString = configuration.ConnectionString;
             _logger = logger;
         }
 

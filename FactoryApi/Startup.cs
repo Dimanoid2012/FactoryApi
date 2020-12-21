@@ -22,10 +22,13 @@ namespace FactoryApi
         public void ConfigureServices(IServiceCollection services)
         {
             var connectionString = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING") ?? "";
+            var enableWriting = Environment.GetEnvironmentVariable("ENABLE_WRITING") ?? "0";
+            FactoryApi.Configuration.Init(connectionString, enableWriting == "1");
+
             services.AddDbContext<ApplicationContext>(options => options.UseNpgsql(connectionString));
             services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<ApplicationContext>();
-            
-            services.AddSingleton(_ => new ConnectionString(connectionString));
+
+            services.AddSingleton(_ => FactoryApi.Configuration.GetInstance());
             
             services.AddControllers();
         }

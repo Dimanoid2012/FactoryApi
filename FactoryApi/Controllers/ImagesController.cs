@@ -22,11 +22,11 @@ namespace FactoryApi.Controllers
         private readonly string _connectionString;
         private readonly ILogger<ImagesController> _logger;
 
-        public ImagesController(ApplicationContext context, ConnectionString connectionString,
+        public ImagesController(ApplicationContext context, Configuration configuration,
             ILogger<ImagesController> logger)
         {
             _context = context;
-            _connectionString = connectionString.Value;
+            _connectionString = configuration.ConnectionString;
             _logger = logger;
         }
 

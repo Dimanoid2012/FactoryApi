@@ -22,10 +22,10 @@ namespace FactoryApi.Controllers
         private readonly string _connectionString;
         private readonly ILogger<ColorsController>  _logger;
         
-        public ColorsController(ApplicationContext context, ConnectionString connectionString, ILogger<ColorsController> logger)
+        public ColorsController(ApplicationContext context, Configuration configuration, ILogger<ColorsController> logger)
         {
             _context = context;
-            _connectionString = connectionString.Value;
+            _connectionString = configuration.ConnectionString;
             _logger = logger;
         }
         
@@ -87,7 +87,7 @@ namespace FactoryApi.Controllers
     internal class ColorInner
     {
         public Guid Id { get; set; }
-        public string Name { get; set; }
+        public string Name { get; set; } = "";
         public short R { get; set; }
         public short G { get; set; }
         public short B { get; set; }

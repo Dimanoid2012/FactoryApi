@@ -14,9 +14,9 @@ namespace FactoryApi.Controllers
     {
         private readonly string _connectionString;
 
-        public UsersController(ConnectionString connectionString)
+        public UsersController(Configuration configuration)
         {
-            _connectionString = connectionString.Value;
+            _connectionString = configuration.ConnectionString;
         }
 
         [HttpGet]

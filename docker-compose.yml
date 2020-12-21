@@ -12,6 +12,7 @@ services:
       dockerfile: FactoryApi/Dockerfile
     environment:
       DB_CONNECTION_STRING: "host=postgres_image;port=5432;database=factorydb;username=factoryuser;password=factoryuser"
+      ENABLE_WRITING: "0"
 
   postgres_image:
     image: postgres:latest

@@ -27,6 +27,7 @@ namespace FactoryApi.Models
         {
             Id = id;
             Name = "";
+            RGB = new RGB(0, 0, 0);
             Models = new List<Model>();
         }
 
