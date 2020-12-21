@@ -8,6 +8,7 @@
   <PropertyGroup>
     <Nullable>enable</Nullable>
     <DockerComposeProjectPath>..\docker-compose.dcproj</DockerComposeProjectPath>
+    <UserSecretsId>4455a653-8f58-4073-a4f0-e31053caa0eb</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
