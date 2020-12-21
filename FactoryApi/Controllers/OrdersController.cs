@@ -73,6 +73,22 @@ namespace FactoryApi.Controllers
                 x.ClientPhone
             }).ToListAsync());
         }
+        
+        [HttpGet("forBoard")]
+        [Authorize(Roles = Roles.Board)]
+        public async Task<IActionResult> GetOrdersForBoard()
+        {
+            var query = _context.Orders.AsNoTracking()
+                .Where(x => !new[] {OrderState.Done, OrderState.Canceled}.Contains(x.State))
+                .Select(x => new
+                {
+                    x.Id,
+                    x.Number,
+                    x.State
+                });
+
+            return Ok(await query.ToListAsync());
+        }
 
         [HttpPost]
         [AllowAnonymous]
