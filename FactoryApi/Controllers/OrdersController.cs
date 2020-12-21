@@ -32,58 +32,45 @@ namespace FactoryApi.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Administrator, Reception, Issuer")]
         public async Task<IActionResult> GetOrders(string? search = null)
         {
             var query = _context.Orders.AsNoTracking();
+            if (!string.IsNullOrWhiteSpace(search))
+                query = query.Where(x =>
+                    x.Number.ToString().Contains(search)
+                    || x.ClientName.Contains(search)
+                    || x.ClientPhone.Contains(search));
             if (User.IsInRole(Roles.Reception))
-            {
-                if (!string.IsNullOrWhiteSpace(search))
-                    query = query.Where(x =>
-                        x.Number.ToString().Contains(search)
-                        || x.ClientName.Contains(search)
-                        || x.ClientPhone.Contains(search));
-
-                return Ok(await query.Select(x => new
-                {
-                    x.Id,
-                    x.Number,
-                    x.State,
-                    Model = new
-                    {
-                        x.Model.Id,
-                        x.Model.Name,
-                        Color = new
-                        {
-                            x.Model.Color.Id,
-                            x.Model.Color.Name,
-                            Value = x.Model.Color.RGB.ToString()
-                        }
-                    },
-                    Size = new
-                    {
-                        x.Size.Id,
-                        x.Size.Name,
-                        x.Size.Value
-                    },
-                    x.Side,
-                    x.ClientName,
-                    x.ClientPhone
-                }).ToListAsync());
-            }
+                query = query.Where(x => x.State == OrderState.Confirming);
+            else if (User.IsInRole(Roles.Issuer))
+                query = query.Where(x => x.State == OrderState.Issue);
 
             return Ok(await query.Select(x => new
             {
-                Id = x.Id,
-                Number = x.Number,
-                State = x.State,
-                ModelId = x.Model.Id,
-                SizeId = x.Size.Id,
-                Side = x.Side,
-                ImageId = x.Image.Id,
-                Top = x.Top,
-                Left = x.Left,
-                ClientName = x.ClientName,
-                ClientPhone = x.ClientPhone
+                x.Id,
+                x.Number,
+                x.State,
+                Model = new
+                {
+                    x.Model.Id,
+                    x.Model.Name,
+                    Color = new
+                    {
+                        x.Model.Color.Id,
+                        x.Model.Color.Name,
+                        Value = x.Model.Color.RGB.ToString()
+                    }
+                },
+                Size = new
+                {
+                    x.Size.Id,
+                    x.Size.Name,
+                    x.Size.Value
+                },
+                x.Side,
+                x.ClientName,
+                x.ClientPhone
             }).ToListAsync());
         }
 
@@ -274,9 +261,9 @@ namespace FactoryApi.Controllers
             });
         }
 
-        [HttpPost("{id}/issue")]
+        [HttpPost("{id}/completeTask")]
         [Authorize(Roles = "Writer, Printer")]
-        public async Task<IActionResult> IssueOrder(Guid id)
+        public async Task<IActionResult> CompleteTask(Guid id)
         {
             var username = User.Identity?.Name ?? "";
             var order = await _context.Orders.AsNoTracking()
@@ -287,7 +274,7 @@ namespace FactoryApi.Controllers
                 return NotFound($"Не найден заказ с id {id}");
 
             _context.Entry(order).State = EntityState.Modified;
-            if (!order.Issue())
+            if (!order.Complete())
             {
                 _logger.LogWarning($"Ошибка перевода заказа в статус ВЫДАЧА пользователем {username}");
                 return BadRequest("Не удалось перевести заказ в статус ВЫДАЧА");
@@ -299,6 +286,31 @@ namespace FactoryApi.Controllers
                 $"Заказ {id} переведен в статус ВЫДАЧА пользователем {username}");
 
             return Ok("Заказ переведен в статус ВЫДАЧА");
+        }
+
+        [HttpPost("{id}/issue")]
+        [Authorize(Roles = Roles.Issuer)]
+        public async Task<IActionResult> IssueOrder(Guid id)
+        {
+            var order = await _context.Orders.AsNoTracking()
+                .Where(x => x.State == OrderState.Issue)
+                .FirstOrDefaultAsync(x => x.Id == id);
+            if (order == null)
+                return NotFound($"Не найден заказ с id {id} в статусе ВЫДАЧА");
+
+            _context.Entry(order).State = EntityState.Modified;
+            if (!order.Issue())
+            {
+                _logger.LogWarning($"Ошибка выдачи заказа пользователем {User.Identity?.Name}");
+                return BadRequest("Заказ не находится в статусе ВЫДАЧА");
+            }
+
+            await _context.SaveChangesAsync();
+
+            _logger.LogInformation(
+                $"Заказ {id} переведен в статус ЗАВЕРШЕНО пользователем {User.Identity?.Name}");
+
+            return Ok("Заказ переведен в статус ЗАВЕРШЕНО");
         }
     }
 }

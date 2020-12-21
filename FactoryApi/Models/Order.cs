@@ -191,13 +191,26 @@ namespace FactoryApi.Models
         /// Переводит заказ в статус ВЫДАЧА
         /// </summary>
         /// <returns>Возвращает true, если заказ был в статусе НА НАНЕСЕНИИ или НА ПЕЧАТИ и был указан исполнитель, иначе возвращает false</returns>
-        public bool Issue()
+        public bool Complete()
         {
             if ((State != OrderState.Writing || WriterName == null) &&
                 (State != OrderState.Printing || PrinterName == null)) 
                 return false;
             
             State = OrderState.Issue;
+            return true;
+        }
+        
+        /// <summary>
+        /// Переводит заказ в статус ГОТОВО
+        /// </summary>
+        /// <returns>Возвращает true, если заказ был в статусе ВЫДАЧА, иначе возвращает false</returns>
+        public bool Issue()
+        {
+            if (State != OrderState.Issue) 
+                return false;
+            
+            State = OrderState.Done;
             return true;
         }
     }
