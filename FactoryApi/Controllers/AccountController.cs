@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using FactoryApi.DTO;
 using Microsoft.AspNetCore.Authorization;
@@ -21,6 +23,43 @@ namespace FactoryApi.Controllers
             _signInManager = signInManager;
             _userManager = userManager;
             _logger = logger;
+        }
+
+        [HttpPost("register")]
+        [Authorize(Roles = Roles.Administrator)]
+        public async Task<IActionResult> Register(RegisterDto dto)
+        {
+            if (dto.Login == null)
+                return BadRequest("Не указано имя пользователя");
+            if (dto.Password == null)
+                return BadRequest("Не указан пароль");
+            if (dto.Password2 == null)
+                return BadRequest("Не указано подтверждение пароля");
+            if (dto.Password != dto.Password2)
+                return BadRequest("Пароли не совпадают");
+            if (!new[] {Roles.Administrator, Roles.Reception, Roles.Writer, Roles.Printer, Roles.Issuer, Roles.Board}
+                .Contains(dto.Role))
+                return BadRequest("Указана несуществующая роль");
+
+            var user = new IdentityUser {UserName = dto.Login};
+            var result = await _userManager.CreateAsync(user, dto.Password);
+            if (!result.Succeeded)
+            {
+                _logger.LogWarning(
+                    $"Неудачная попытка создания пользователя {dto.Login} пользователем {User.Identity?.Name}: {ErrorsListToString(result.Errors)}");
+                return BadRequest($"Ошибка создания нового пользователя: {ErrorsListToString(result.Errors)}");
+            }
+
+            result = await _userManager.AddToRoleAsync(user, dto.Role);
+            if (!result.Succeeded)
+            {
+                _logger.LogWarning(
+                    $"Неудачная попытка добавления пользователя {dto.Login} к роли {dto.Role} пользователем {User.Identity?.Name}: {ErrorsListToString(result.Errors)}");
+                return BadRequest($"Ошибка создания нового пользователя: {ErrorsListToString(result.Errors)}");
+            }
+
+            _logger.LogInformation($"Пользователь {dto.Login} успешно зарегистрирован");
+            return NoContent();
         }
 
         [HttpPost("login")]
@@ -80,5 +119,8 @@ namespace FactoryApi.Controllers
             _logger.LogInformation($"Пользователь {username} вышел из системы");
             return NoContent();
         }
+
+        private static string ErrorsListToString(IEnumerable<IdentityError> errors) =>
+            string.Join(',', errors.Select(x => $"{x.Code}: {x.Description}"));
     }
 }
