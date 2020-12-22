@@ -1,13 +1,17 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace FactoryApi.DTO
+namespace FactoryApi.SwaggerDoc
 {
-    /// <summary>
-    /// Модель
-    /// </summary>
-    public class ModelDto
+    public class Model
     {
+        /// <summary>
+        /// Идентификатор модели
+        /// </summary>
+        /// <example>fd058e3f-a5e0-47ef-bf15-3d83edc87a61</example>
+        [Required]
+        public Guid Id { get; set; }
+
         /// <summary>
         /// Наименование модели
         /// </summary>
@@ -16,10 +20,9 @@ namespace FactoryApi.DTO
         public string Name { get; set; } = "";
 
         /// <summary>
-        /// Идентификатор цвет модели
+        /// Цвет модели
         /// </summary>
-        /// <example>fd058e3f-a5e0-47ef-bf15-3d83edc87a61</example>
         [Required]
-        public Guid ColorId { get; set; }
+        public Color Color { get; set; } = new();
     }
 }

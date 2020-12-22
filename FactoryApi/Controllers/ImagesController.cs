@@ -2,14 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Dapper;
 using FactoryApi.DTO;
 using FactoryApi.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using Npgsql;
 
 namespace FactoryApi.Controllers
 {
@@ -19,25 +18,22 @@ namespace FactoryApi.Controllers
     public class ImagesController : ControllerBase
     {
         private readonly ApplicationContext _context;
-        private readonly string _connectionString;
         private readonly ILogger<ImagesController> _logger;
 
-        public ImagesController(ApplicationContext context, Configuration configuration,
-            ILogger<ImagesController> logger)
+        public ImagesController(ApplicationContext context, ILogger<ImagesController> logger)
         {
             _context = context;
-            _connectionString = configuration.ConnectionString;
             _logger = logger;
         }
 
+        /// <summary>
+        /// Список всех картинок
+        /// </summary>
+        /// <response code="200">Возвращает список всех картинок</response>
         [HttpGet]
-        public async Task<IEnumerable<ImageDto>> GetSizes()
+        public async Task<ActionResult<IEnumerable<SwaggerDoc.Image>>> GetSizes()
         {
-            await using var db = new NpgsqlConnection(_connectionString);
-            var images =  await db.QueryAsync<ImageInner>(@"
-                SELECT ""Id"", ""Name"", ""Width"", ""Height"", ""Type"", ""Contents""
-                FROM ""Images""");
-            return images.Select(x => new ImageDto
+            return await _context.Images.Select(x => new SwaggerDoc.Image
             {
                 Id = x.Id,
                 Name = x.Name,
@@ -45,23 +41,29 @@ namespace FactoryApi.Controllers
                 Height = x.Height,
                 Type = x.Type,
                 ContentsBase64 = Convert.ToBase64String(x.Contents)
-            });
+            }).ToListAsync();
         }
 
+        /// <summary>
+        /// Создание новой картинки
+        /// </summary>
+        /// <param name="dto">Параметры новой картинки</param>
+        /// <response code="200">Картинки успешно создана. Возвращает идентификатор созданной картинки</response>
+        /// <response code="400">Содержимое картинки не похоже на base64. Возвращает текст ошибки</response>
         [HttpPost]
         public async Task<ActionResult<Guid>> CreateImage(ImageDto dto)
         {
             byte[] contents;
             try
             {
-                contents = Convert.FromBase64String(dto.ContentsBase64 ?? "");
+                contents = Convert.FromBase64String(dto.ContentsBase64);
             }
             catch (FormatException)
             {
                 return BadRequest("Неправильный формат base64");
             }
 
-            var image = new Image(dto.Name ?? "", dto.Width ?? 0, dto.Height ?? 0, dto.Type ?? "", contents);
+            var image = new Image(dto.Name, dto.Width, dto.Height, dto.Type, contents);
             _context.Images.Add(image);
             await _context.SaveChangesAsync();
 
@@ -69,6 +71,13 @@ namespace FactoryApi.Controllers
             return image.Id;
         }
 
+        /// <summary>
+        /// Удаляет картинку с указанным идентификатором
+        /// </summary>
+        /// <param name="id" example="fd058e3f-a5e0-47ef-bf15-3d83edc87a61">Идентификатор картинки</param>
+        /// <response code="204">Картинка успешно удалена. Ничего не возвращает</response>
+        /// <response code="404">Картинка не найдена. Возвращает текст ошибки</response>
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteImage(Guid id)
         {
@@ -86,38 +95,5 @@ namespace FactoryApi.Controllers
 
             return NoContent();
         }
-    }
-
-    internal class ImageInner
-    {
-        /// <summary>
-        /// Идентификатор картинки
-        /// </summary>
-        public Guid Id { get; set; }
-
-        /// <summary>
-        /// Наименование картинки
-        /// </summary>
-        public string? Name { get; set; }
-
-        /// <summary>
-        /// Ширина картинки
-        /// </summary>
-        public decimal Width { get; set; }
-
-        /// <summary>
-        /// Высота картинки
-        /// </summary>
-        public decimal Height { get; set; }
-        
-        /// <summary>
-        /// MIME-type картинки
-        /// </summary>
-        public string? Type { get; set; }
-
-        /// <summary>
-        /// Содержимое картинки
-        /// </summary>
-        public byte[] Contents { get; set; } = Array.Empty<byte>();
     }
 }

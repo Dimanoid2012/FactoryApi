@@ -19,6 +19,10 @@ namespace FactoryApi.Controllers
             _connectionString = configuration.ConnectionString;
         }
 
+        /// <summary>
+        /// Список всех пользователей и их ролей
+        /// </summary>
+        /// <response code="200">Возвращает список всех пользователей и их ролей</response>
         [HttpGet]
         [Authorize(Roles = Roles.Administrator)]
         public async Task<IEnumerable<UserDto>> GetUsers()

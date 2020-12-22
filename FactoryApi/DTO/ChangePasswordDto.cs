@@ -1,20 +1,31 @@
-﻿namespace FactoryApi.DTO
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace FactoryApi.DTO
 {
+    /// <summary>
+    /// Данные для смены пароля
+    /// </summary>
     public class ChangePasswordDto
     {
         /// <summary>
         /// Текущий пароль
         /// </summary>
-        public string? CurrentPassword { get; set; }
-        
+        /// <example>AAAaaa!2345</example>
+        [Required]
+        public string CurrentPassword { get; set; } = "";
+
         /// <summary>
         /// Новый пароль
         /// </summary>
-        public string? NewPassword { get; set; }
-        
+        /// <example>AAAaaa!2346</example>
+        [Required]
+        public string NewPassword { get; set; } = "";
+
         /// <summary>
         /// Повтор нового пароля
         /// </summary>
-        public string? NewPassword2 { get; set; }
+        /// <example>AAAaaa!2346</example>
+        [Required]
+        public string NewPassword2 { get; set; } = "";
     }
 }

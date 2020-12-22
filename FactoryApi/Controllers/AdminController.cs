@@ -2,8 +2,8 @@
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
-using FactoryApi.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -27,6 +27,12 @@ namespace FactoryApi.Controllers
             _logger = logger;
         }
         
+        /// <summary>
+        /// Перезапускает сессию: удаляет все заказы, включает или выключает этап нанесения
+        /// </summary>
+        /// <param name="enableWriting" example="true">Включить этап нанесения</param>
+        /// <response code="204">Успешный перезапуск сессии. Все заказы удалены. Ничего не возвращает</response>
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [HttpPost("resetSession")]
         public async Task<IActionResult> ResetSession(bool enableWriting)
         {
@@ -42,6 +48,11 @@ namespace FactoryApi.Controllers
             return NoContent();
         }
         
+        /// <summary>
+        /// Возвращает логи сервера в виде текста
+        /// </summary>
+        /// <response code="200">Возвращает логи в виде текста</response>
+        /// <response code="400">Ошибка чтения логов. Возвращает текст ошибки</response>
         [HttpGet("logs")]
         public async Task<IActionResult> GetLogs()
         {

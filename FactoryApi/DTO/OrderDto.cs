@@ -9,11 +9,6 @@ namespace FactoryApi.DTO
     public class OrderDto
     {
         /// <summary>
-        /// Идентификатор заказа
-        /// </summary>
-        public Guid Id { get; set; }
-
-        /// <summary>
         /// Статус заказа
         /// </summary>
         public OrderState State { get; set; }

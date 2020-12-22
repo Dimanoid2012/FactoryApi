@@ -2,56 +2,59 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Dapper;
 using FactoryApi.DTO;
 using FactoryApi.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using Npgsql;
 
 namespace FactoryApi.Controllers
 {
+    /// <summary>
+    /// Работа со справочником цветов
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     [Authorize(Roles = Roles.Administrator)]
     public class ColorsController : ControllerBase
     {
         private readonly ApplicationContext _context;
-        private readonly string _connectionString;
-        private readonly ILogger<ColorsController>  _logger;
-        
-        public ColorsController(ApplicationContext context, Configuration configuration, ILogger<ColorsController> logger)
+        private readonly ILogger<ColorsController> _logger;
+
+        public ColorsController(ApplicationContext context, ILogger<ColorsController> logger)
         {
             _context = context;
-            _connectionString = configuration.ConnectionString;
             _logger = logger;
         }
-        
+
+        /// <summary>
+        /// Список всех цветов
+        /// </summary>
+        /// <response code="200">Возвращает список всех цветов</response>
         [HttpGet]
-        public async Task<IEnumerable<ColorDto>> GetColors()
+        public async Task<ActionResult<IEnumerable<SwaggerDoc.Color>>> GetColors()
         {
-            await using var db = new NpgsqlConnection(_connectionString);
-            var colors =  await db.QueryAsync<ColorInner>(@"
-                SELECT ""Id"", ""Name"", ""RGB_R"" ""R"", ""RGB_G"" ""G"", ""RGB_B"" ""B""
-                FROM ""Colors""");
-            return colors.Select(x => new ColorDto {Id = x.Id, Name = x.Name, Value = x.ToString()});
+            var colors = await _context.Colors.AsNoTracking().ToListAsync();
+            return colors.Select(x => new SwaggerDoc.Color {Id = x.Id, Name = x.Name, Value = x.RGB.ToString()}).ToList();
         }
 
+        /// <summary>
+        /// Создание нового цвета
+        /// </summary>
+        /// <param name="dto">Параметры нового цвета</param>
+        /// <response code="200">Цвет успешно создан. Возвращает идентификатор созданного цвета</response>
+        /// <response code="400">Значение цвета в неправильном формате. Возвращает текст ошибки</response>
         [HttpPost]
         public async Task<ActionResult<Guid>> CreateColor(ColorDto dto)
         {
-            if (dto.Name == null)
-                return BadRequest("Не указано наименование цвета");
-            if (dto.Value == null)
-                return BadRequest("Не указано значение цвета");
             RGB rgb;
             try
             {
                 rgb = RGB.Parse(dto.Value);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 _logger.LogWarning($"Ошибка создания нового цвета пользователем {User.Identity?.Name}: {ex}");
                 return BadRequest(ex.Message);
@@ -66,6 +69,13 @@ namespace FactoryApi.Controllers
             return color.Id;
         }
 
+        /// <summary>
+        /// Удаляет цвет с указанным идентификатором
+        /// </summary>
+        /// <param name="id" example="fd058e3f-a5e0-47ef-bf15-3d83edc87a61">Идентификатор цвета</param>
+        /// <response code="204">Цвет успешно удален. Ничего не возвращает</response>
+        /// <response code="404">Цвет не найден. Возвращает текст ошибки</response>
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteColor(Guid id)
         {
@@ -76,26 +86,12 @@ namespace FactoryApi.Controllers
             }
             catch (DbUpdateConcurrencyException ex)
             {
-                _logger.LogWarning($"Ошибка удаления несуществующего цвета с id {id} пользователем {User.Identity?.Name}: {ex}");
+                _logger.LogWarning(
+                    $"Ошибка удаления несуществующего цвета с id {id} пользователем {User.Identity?.Name}: {ex}");
                 return NotFound($"Не найден цвет с id {id}");
             }
 
             return NoContent();
         }
-    }
-
-    internal class ColorInner
-    {
-        public Guid Id { get; set; }
-        public string Name { get; set; } = "";
-        public short R { get; set; }
-        public short G { get; set; }
-        public short B { get; set; }
-        
-        /// <summary>
-        /// Возвращает HTML-представление цвета, например, #FFFFFF.
-        /// </summary>
-        /// <returns>Возвращает HTML-представление цвета, например, #FFFFFF.</returns>
-        public override string ToString() => $"#{R:X2}{G:X2}{B:X2}";
     }
 }

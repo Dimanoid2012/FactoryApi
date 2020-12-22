@@ -2,14 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Dapper;
 using FactoryApi.DTO;
-using FactoryApi.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using Npgsql;
+using Model = FactoryApi.Models.Model;
 
 namespace FactoryApi.Controllers
 {
@@ -19,25 +18,40 @@ namespace FactoryApi.Controllers
     public class ModelsController : ControllerBase
     {
         private readonly ApplicationContext _context;
-        private readonly string _connectionString;
         private readonly ILogger<ModelsController>  _logger;
         
-        public ModelsController(ApplicationContext context, Configuration configuration, ILogger<ModelsController> logger)
+        public ModelsController(ApplicationContext context, ILogger<ModelsController> logger)
         {
             _context = context;
-            _connectionString = configuration.ConnectionString;
             _logger = logger;
         }
         
+        /// <summary>
+        /// Список всех моделей
+        /// </summary>
+        /// <response code="200">Возвращает список всех моделей</response>
         [HttpGet]
-        public async Task<IEnumerable<ModelDto>> GetModels()
+        public async Task<ActionResult<IEnumerable<SwaggerDoc.Model>>> GetModels()
         {
-            await using var db = new NpgsqlConnection(_connectionString);
-            return  await db.QueryAsync<ModelDto>(@"
-                SELECT ""Id"", ""Name"", ""ColorId""
-                FROM ""Models""");
+            return await _context.Models.AsNoTracking().Select(x => new SwaggerDoc.Model
+            {
+                Id = x.Id,
+                Name = x.Name,
+                Color = new SwaggerDoc.Color
+                {
+                    Id = x.Color.Id,
+                    Name = x.Color.Name,
+                    Value = x.Color.RGB.ToString()
+                }
+            }).ToListAsync();
         }
 
+        /// <summary>
+        /// Создание новой модели
+        /// </summary>
+        /// <param name="dto">Параметры новой модели</param>
+        /// <response code="200">Модель успешно создана. Возвращает идентификатор созданной модели</response>
+        /// <response code="400">Не найден цвет модели. Возвращает текст ошибки</response>
         [HttpPost]
         public async Task<ActionResult<Guid>> CreateModel(ModelDto dto)
         {
@@ -63,6 +77,13 @@ namespace FactoryApi.Controllers
             return model.Id;
         }
 
+        /// <summary>
+        /// Удаляет модель с указанным идентификатором
+        /// </summary>
+        /// <param name="id" example="fd058e3f-a5e0-47ef-bf15-3d83edc87a61">Идентификатор модели</param>
+        /// <response code="204">Модель успешно удалена. Ничего не возвращает</response>
+        /// <response code="404">Модель не найдена. Возвращает текст ошибки</response>
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteModel(Guid id)
         {

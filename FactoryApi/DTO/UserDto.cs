@@ -1,4 +1,6 @@
-﻿namespace FactoryApi.DTO
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace FactoryApi.DTO
 {
     /// <summary>
     /// Пользователь
@@ -8,11 +10,15 @@
         /// <summary>
         /// Имя пользователя
         /// </summary>
-        public string? Login { get; set; }
+        /// <example>reception</example>
+        [Required]
+        public string Login { get; set; } = "";
 
         /// <summary>
         /// Роль
         /// </summary>
-        public string? Role { get; set; }
+        /// <example>Reception</example>
+        [Required]
+        public string Role { get; set; } = "";
     }
 }

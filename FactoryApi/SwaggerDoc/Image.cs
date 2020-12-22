@@ -1,12 +1,20 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 
-namespace FactoryApi.DTO
+namespace FactoryApi.SwaggerDoc
 {
     /// <summary>
     /// Картинка
     /// </summary>
-    public class ImageDto
+    public class Image
     {
+        /// <summary>
+        /// Идентификатор картинки
+        /// </summary>
+        /// <example>fd058e3f-a5e0-47ef-bf15-3d83edc87a61</example>
+        [Required]
+        public Guid Id { get; set; }
+        
         /// <summary>
         /// Наименование картинки
         /// </summary>

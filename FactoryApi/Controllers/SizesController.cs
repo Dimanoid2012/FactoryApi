@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
-using Dapper;
 using FactoryApi.DTO;
 using FactoryApi.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using Npgsql;
 
 namespace FactoryApi.Controllers
 {
@@ -18,34 +18,39 @@ namespace FactoryApi.Controllers
     public class SizesController : ControllerBase
     {
         private readonly ApplicationContext _context;
-        private readonly string _connectionString;
         private readonly ILogger<SizesController> _logger;
 
-        public SizesController(ApplicationContext context, Configuration configuration,
-            ILogger<SizesController> logger)
+        public SizesController(ApplicationContext context, ILogger<SizesController> logger)
         {
             _context = context;
-            _connectionString = configuration.ConnectionString;
             _logger = logger;
         }
 
+        /// <summary>
+        /// Список всех размеров
+        /// </summary>
+        /// <response code="200">Возвращает список всех размеров</response>
         [HttpGet]
-        public async Task<IEnumerable<SizeDto>> GetSizes()
+        public async Task<ActionResult<IEnumerable<SwaggerDoc.Size>>> GetSizes()
         {
-            await using var db = new NpgsqlConnection(_connectionString);
-            return await db.QueryAsync<SizeDto>(@"
-                SELECT ""Id"", ""Name"", ""Value""
-                FROM ""Sizes""");
+            return await _context.Sizes
+                .Select(x => new SwaggerDoc.Size
+                {
+                    Id = x.Id,
+                    Name = x.Name,
+                    Value = x.Value
+                })
+                .ToListAsync();
         }
 
+        /// <summary>
+        /// Создание нового размера
+        /// </summary>
+        /// <param name="dto">Параметры нового размера</param>
+        /// <response code="200">Размер успешно создан. Возвращает идентификатор созданного размера</response>
         [HttpPost]
         public async Task<ActionResult<Guid>> CreateSize(SizeDto dto)
         {
-            if (dto.Name == null)
-                return BadRequest("Не указано наименование размера");
-            if (dto.Value == null)
-                return BadRequest("Не указано обозначение размера");
-
             var size = new Size(dto.Name, dto.Value);
             
             _context.Sizes.Add(size);
@@ -55,6 +60,13 @@ namespace FactoryApi.Controllers
             return size.Id;
         }
 
+        /// <summary>
+        /// Удаляет размер с указанным идентификатором
+        /// </summary>
+        /// <param name="id" example="fd058e3f-a5e0-47ef-bf15-3d83edc87a61">Идентификатор размера</param>
+        /// <response code="204">Размер успешно удален. Ничего не возвращает</response>
+        /// <response code="404">Размер не найден. Возвращает текст ошибки</response>
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteSize(Guid id)
         {
