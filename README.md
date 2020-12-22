@@ -32,3 +32,6 @@
 3. Запустить контейнер из образа: 
 
         docker run dimanoid2018/factoryapi
+
+## Описание методов API
+Открыть страницу /swagger (например, http://localhost:50000/swagger в режиме отладки).
