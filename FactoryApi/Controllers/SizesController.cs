@@ -31,6 +31,7 @@ namespace FactoryApi.Controllers
         /// </summary>
         /// <response code="200">Возвращает список всех размеров</response>
         [HttpGet]
+        [AllowAnonymous]
         public async Task<ActionResult<IEnumerable<SwaggerDoc.Size>>> GetSizes()
         {
             return await _context.Sizes

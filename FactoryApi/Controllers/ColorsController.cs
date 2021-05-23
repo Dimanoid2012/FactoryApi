@@ -34,6 +34,7 @@ namespace FactoryApi.Controllers
         /// </summary>
         /// <response code="200">Возвращает список всех цветов</response>
         [HttpGet]
+        [AllowAnonymous]
         public async Task<ActionResult<IEnumerable<SwaggerDoc.Color>>> GetColors()
         {
             var colors = await _context.Colors.AsNoTracking().ToListAsync();

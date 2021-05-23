@@ -31,6 +31,7 @@ namespace FactoryApi.Controllers
         /// </summary>
         /// <response code="200">Возвращает список всех картинок</response>
         [HttpGet]
+        [AllowAnonymous]
         public async Task<ActionResult<IEnumerable<SwaggerDoc.Image>>> GetSizes()
         {
             return await _context.Images.Select(x => new SwaggerDoc.Image

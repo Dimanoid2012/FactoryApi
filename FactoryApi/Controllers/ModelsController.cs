@@ -31,6 +31,7 @@ namespace FactoryApi.Controllers
         /// </summary>
         /// <response code="200">Возвращает список всех моделей</response>
         [HttpGet]
+        [AllowAnonymous]
         public async Task<ActionResult<IEnumerable<SwaggerDoc.Model>>> GetModels()
         {
             return await _context.Models.AsNoTracking().Select(x => new SwaggerDoc.Model
