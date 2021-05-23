@@ -65,6 +65,19 @@ namespace FactoryApi.Controllers
         }
 
         /// <summary>
+        /// Проверка авторизации пользователя
+        /// </summary>   
+        /// <response code="204">возвращает роль</response>
+        [Authorize()]
+        [HttpPost("registered")]
+        public async Task<ActionResult<string>> Registered()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            var userRoles = await _userManager.GetRolesAsync(user);
+            return userRoles.First();
+        }
+
+        /// <summary>
         /// Авторизация
         /// </summary>
         /// <response code="204">Успешная авторизация. Ничего не возвращает</response>
