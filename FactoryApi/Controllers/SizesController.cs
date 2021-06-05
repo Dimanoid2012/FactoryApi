@@ -70,7 +70,10 @@ namespace FactoryApi.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteSize(Guid id)
         {
-            _context.Sizes.Remove(new Size(id));
+            var model = await _context.Sizes.FindAsync(id);
+            if (model == null)
+                return NotFound();
+            _context.Sizes.Remove(model);
             try
             {
                 await _context.SaveChangesAsync();

@@ -79,7 +79,10 @@ namespace FactoryApi.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteColor(Guid id)
         {
-            _context.Colors.Remove(new Color(id));
+            var model = await _context.Colors.FindAsync(id);
+            if (model == null)
+                return NotFound();
+            _context.Colors.Remove(model);
             try
             {
                 await _context.SaveChangesAsync();
