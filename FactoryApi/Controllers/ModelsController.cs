@@ -88,7 +88,10 @@ namespace FactoryApi.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteModel(Guid id)
         {
-            _context.Models.Remove(new Model(id));
+            var model = await _context.Models.FindAsync(id);
+            if (model == null)
+                return NotFound();
+            _context.Models.Remove(model);
             try
             {
                 await _context.SaveChangesAsync();

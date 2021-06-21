@@ -82,7 +82,10 @@ namespace FactoryApi.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteImage(Guid id)
         {
-            _context.Images.Remove(new Image(id));
+            var model = await _context.Images.FindAsync(id);
+            if (model == null)
+                return NotFound();
+            _context.Images.Remove(model);
             try
             {
                 await _context.SaveChangesAsync();

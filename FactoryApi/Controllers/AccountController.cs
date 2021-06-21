@@ -155,7 +155,11 @@ namespace FactoryApi.Controllers
         [Authorize(Roles = Roles.Administrator)]
         public async Task<IActionResult> DeleteUser(string username)
         {
-            var result = await _userManager.DeleteAsync(new IdentityUser(username));
+            var user = await _userManager.FindByNameAsync(username);
+            if (user == null)
+                return NotFound();
+
+            var result = await _userManager.DeleteAsync(user);
             if (!result.Succeeded)
             {
                 _logger.LogWarning(
