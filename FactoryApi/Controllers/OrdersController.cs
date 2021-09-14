@@ -66,6 +66,8 @@ namespace FactoryApi.Controllers
                     Type = x.Image.Type,
                     ContentsBase64 = Convert.ToBase64String(x.Image.Contents)
                 },
+                Top = x.Top,
+                Left = x.Left,
                 Model = new SwaggerDoc.Model
                 {
                     Id = x.Model.Id,
