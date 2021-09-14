@@ -171,19 +171,6 @@ namespace FactoryApi.Controllers
             return NoContent();
         }
 
-        /// <summary> 
-        /// Проверка авторизации пользователя 
-        /// </summary>    
-        /// <response code="204">возвращает роль</response> 
-        [Authorize()] 
-        [HttpPost("registered")] 
-        public async Task<ActionResult<string>> Registered() 
-        { 
-            var user = await _userManager.GetUserAsync(User); 
-            var userRoles = await _userManager.GetRolesAsync(user); 
-            return userRoles.First(); 
-        }
-
         private static string ErrorsListToString(IEnumerable<IdentityError> errors) =>
             string.Join(',', errors.Select(x => $"{x.Code}: {x.Description}"));
     }
