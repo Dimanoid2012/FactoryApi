@@ -33,7 +33,9 @@ namespace FactoryApi
             services.AddSingleton(_ => FactoryApi.Configuration.GetInstance());
             
             services.AddControllers();
-            
+
+            services.AddCors();
+
             // Register the Swagger generator, defining 1 or more Swagger documents
             services.AddSwaggerGen(setupAction =>
             {
@@ -65,6 +67,12 @@ namespace FactoryApi
             });
 
             app.UseRouting();
+
+            app.UseCors(bilder => bilder.WithOrigins("http://localhost:4000", "http://localhost:3000")
+                             .AllowAnyHeader()
+                             .AllowAnyMethod()
+                             .AllowCredentials());
+
 
             app.UseAuthentication();
             app.UseAuthorization();
